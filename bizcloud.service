@@ -1,0 +1,21 @@
+[Unit]
+Description=rclone service for mounting bizcloud
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/rclone mount \
+--config=/home/bitnami/.config/rclone/rclone.conf \
+--allow-other \
+--fast-list \
+pcloud:/bizcloud/ /home/bitnami/bizcloud
+Restart=always
+RestartSec=10
+ExecStop=/bin/fusermount -uz /home/bitnami/bizcloud
+User=bitnami
+Group=bitnami
+
+[Install]
+WantedBy=multi-user.target
+
