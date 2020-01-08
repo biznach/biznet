@@ -1,34 +1,110 @@
 #!/bin/bash
 # ADD -vx after bash to echo expanded script
 
-# save, clear screen
-echo -e "\e[?1049h"
-clear
-
-# example "application" follows...
-
-#figlet WELCOME
+# VARIABLES ==========
 
 RED='\033[0;31m'
 CYAN='\033[1;36m'
 NC='\033[0m'
+input="ENTER"
 
+# FUNCTIONS ==========
+
+function pause {
+  echo -e "\n${CYAN}Press any key to Continue${NC}\n"
+  read -n 1 -s -r
+  menu
+}
+
+function one {
+  clear
+  echo -e "1) Initialization Wizard\n"
+  read -p "Enter Host Name: " bizhost
+  echo -e "$bizhost" > $HOME/.bizhost
+  echo -e "\nOperation Complete"
+  pause
+  menu
+}
+
+function two {
+  clear
+  echo -e "2) Option 2\n"
+  echo -e "\nOperation Complete"
+  pause
+  menu
+}
+
+function three {
+  clear
+  echo -e "3) Option 3\n"
+  echo -e "\nOperation Complete"
+  pause
+  menu
+}
+
+function finish {
+stty echo
+# restore screen
+echo -e "\e[?1049l"
+#source .bizbash
+exec bash
+exit 0
+}
+
+function menu {
+clear
 figlet "BizNet"
-
 echo -e " ** ${CYAN}BizNet Setup Script${NC} **\n"
 
-echo "1) Option 1..."
+echo "1) Initialization Wizard"
 echo "2) Option 2..."
 echo "3) Option 3..."
+echo "X) Exit"
 
 echo -e "\nMake a Selection\n"
+input
+}
 
-read $input
+function input {
+read -N 10000000 -t 0.01
+read -n 1 -s -r input
+case $input in
+  1)
+    one
+  ;;
+  2)
+    two
+  ;;
+  3)
+    three
+  ;;
+  x|X)
+    finish
+  ;;
+  *)
+    stty -echo
+    echo -e "${RED} <<Invalid>>${NC}"
+    # Beep
+    echo -e "\a"
+    sleep 0.5
+    stty echo
+    menu
+  ;;
+esac
+}
 
-# example "application" ends here
+# EXECUTE ==========
 
-# restore
+# save screen
+echo -e "\e[?1049h"
 
+# draw menu
+menu
+
+# ERROR ==========
+
+# restore screen and exit
+echo "ERROR"
 echo -e "\e[?1049l"
-
-exit 0
+#source .bizbash
+exit 1

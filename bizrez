@@ -1,3 +1,8 @@
 #!/bin/bash
 
-echo rclone sync pcloud:/bizcloud/$BIZHOST/$USER/$1 . #|bash
+if [[ $# != 1 ]]; then
+ echo "Target file argument reqired"
+ exit 1
+fi
+
+echo rclone sync pcloud:/bizcloud/$BIZHOST/$USER/$1 .|bash
