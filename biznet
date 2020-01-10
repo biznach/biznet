@@ -18,9 +18,11 @@ function pause {
 
 function one {
   clear
-  echo -e "1) Initialization Wizard\n"
+  echo -e "\n1) Initialization Wizard\n"
   read -p "Enter Host Name: " bizhost
-  echo -e "$bizhost" > $HOME/.bizhost
+  if [[ ! ( -z "$bizhost" ) ]]; then
+    echo -e "$bizhost" > $HOME/.bizhost
+  fi
   echo -e "\nOperation Complete"
   pause
   menu
@@ -28,7 +30,7 @@ function one {
 
 function two {
   clear
-  echo -e "2) Option 2\n"
+  echo -e "\n2) Option 2\n"
   echo -e "\nOperation Complete"
   pause
   menu
@@ -36,7 +38,7 @@ function two {
 
 function three {
   clear
-  echo -e "3) Option 3\n"
+  echo -e "\n3) Option 3\n"
   echo -e "\nOperation Complete"
   pause
   menu
@@ -46,7 +48,7 @@ function finish {
 stty echo
 # restore screen
 echo -e "\e[?1049l"
-#source .bizbash
+read -N 10000000 -t 0.01
 exec bash
 exit 0
 }
@@ -78,15 +80,25 @@ case $input in
   3)
     three
   ;;
-  x|X)
+  $'\e[A')
+    # THIS IS NOT WORKING TO CAPTURE ARROW KEYS without -n 2
+    stty -echo
+    echo -e "${RED} <<<Invalid>>>${NC}"
+    # Beep
+    echo -e "\a"
+    sleep 0.5
+    stty echo
+    menu
+  ;;
+  x|X|$'\e')
     finish
   ;;
   *)
     stty -echo
-    echo -e "${RED} <<Invalid>>${NC}"
+    echo -e "${RED} <<<Invalid>>>${NC}"
     # Beep
     echo -e "\a"
-    sleep 0.5
+    sleep 0.2
     stty echo
     menu
   ;;
@@ -104,7 +116,8 @@ menu
 # ERROR ==========
 
 # restore screen and exit
-echo "ERROR"
+echo "ERROR - This should not have happened"
 echo -e "\e[?1049l"
-#source .bizbash
+read -N 10000000 -t 0.01
+exec bash
 exit 1

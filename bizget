@@ -5,4 +5,12 @@ if [[ $# != 1 ]]; then
  exit 1
 fi
 
-echo rclone sync pcloud:/bizcloud/$BIZHOST/master/$1 .|bash
+if [[ -d $HOME/bizcloud/master/$1 ]]; then
+echo rclone sync pcloud:/bizcloud/master/$1 ./$1|bash
+echo "Directory Copied"
+else
+echo rclone sync pcloud:/bizcloud/master/$1 .|bash
+echo "File Copied"
+fi
+
+exit 0
