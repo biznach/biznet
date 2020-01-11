@@ -1,7 +1,9 @@
 #!/bin/bash
 
 if [[ $# != 1 ]]; then
-  gitdir=$PWD
+  #gitdir=$PWD
+  echo "Target repository required"
+  exit 1
 else
   gitdir=$1
 fi
