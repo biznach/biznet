@@ -1,0 +1,69 @@
+##############################
+# BIZBASH
+##############################
+
+##############################
+# ADD THIS include to .bashrc
+# if [[ -s $HOME/bizbin/bizbash ]]; then
+#   source $HOME/bizbin/bizbash 
+# fi
+##############################
+
+# INITIALIZATION ==========
+
+if [[ ! ( -s $HOME/bizbin ) ]]; then
+  git clone https://github.com/bizfu/bizbin
+fi
+
+# VARIABLES ==========
+
+RED='\033[0;31m'
+CYAN='\033[1;36m'
+NC='\033[0m' # No Color
+
+# variable for friendly host name
+if [[ -s $HOME/.bizconfig ]]; then
+  # export first line of .bizhost file as env variable
+  export BIZHOST=$( awk '{print $1; exit}' $HOME/.bizconfig )
+else
+  export BIZHOST="biznet"
+fi
+
+# save history after every command
+export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+
+# ALIASES ==========
+
+# some more ls aliases
+alias lla='ls -la'
+alias ll='ls -a'
+alias ll='ls -l'
+alias read='less ./README.txt'
+
+# BIZPROMT ==========
+
+case "$TERM" in
+    xterm-color|*-256color) color_prompt=yes;;
+esac
+
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@$BIZHOST\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@$BIZHOST:\w\$ '
+fi
+unset color_prompt
+
+# WELCOME ==========
+
+figlet '     BizNet'
+echo -e  "      *** ${CYAN}Welcome to BizNet${NC} ***\n"
+
+# BIZPATH ==========
+
+export PATH=$HOME/bizbin:$PATH
+
+# INCLUDES ==========
+
+# homebrew
+eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+

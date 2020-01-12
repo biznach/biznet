@@ -37,27 +37,27 @@ function completed {
 function one {
   clear
   echo -e "\n1) Initialization Wizard\n"
-  if [[ ( -s $HOME/.bizhost ) ]]; then
+  if [[ ( -s $HOME/.bizconfig ) ]]; then
     printf "Current Host Name: "
-    echo -e ${CYAN}$(cat $HOME/.bizhost)${NC}
+    echo -e ${CYAN}$(cat $HOME/.bizconfig)${NC}
+  else
+      echo -e "biznet" > $HOME/.bizconfig
   fi
   echo -e "\n(leave empty to skip)"
-  read -p "Enter New Host Name: " bizhost
-  if [[ ! ( -z "$bizhost" ) ]]; then
-    echo -e "$bizhost" > $HOME/.bizhost
-    if [[ ( -s $HOME/.bizhost ) ]]; then
+  read -p "Enter New Host Name: " bizconfig
+  if [[ ! ( -z "$bizconfig" ) ]]; then
+    echo -e "$bizconfig" > $HOME/.bizconfig
+    if [[ ( -s $HOME/.bizconfig ) ]]; then
       printf "\nUpdated Host Name: "
-      echo -e "${CYAN}$(cat $HOME/.bizhost)${NC}\n"
+      echo -e "${CYAN}$(cat $HOME/.bizconfig)${NC}\n"
     fi
   else
     printf "\nRetained Host Name: "
-    echo -e "${CYAN}$(cat $HOME/.bizhost)${NC}\n"
+    echo -e "${CYAN}$(cat $HOME/.bizconfig)${NC}\n"
   fi
-
   pause
   sudo apt-get update
   sudo apt-get upgrade
-
   echo -e "\nOperation Complete..."
   completed
   menu
@@ -66,7 +66,13 @@ function one {
 function two {
   clear
   echo -e "\n2) Installation Wizard\n"
+  sudo apt-get update
+  sudo apt-get upgrade
+  pause
   sudo apt-get install -y figlet
+  pause
+  # sudo apt-get install -y rclone
+  curl https://rclone.org/install.sh | sudo bash
   echo -e "\nOperation Complete..."
   completed
   menu
@@ -75,9 +81,9 @@ function two {
 function three {
   clear
   echo -e "\n3) Backup Wizard\n"
-  bizbak $HOME/bizbin
-  bizbak $HOME/biznotes
-  bizbak $HOME/.bizbash
+  bizput $HOME/bizbin
+  bizput $HOME/biznotes
+  bizput $HOME/.gitconfig
   echo -e "\nOperation Complete..."
   completed
   menu
@@ -146,6 +152,8 @@ esac
 
 # EXECUTE ==========
 
+# attempt to save biznet command getting lost
+$PROMPT_COMMAND
 # save screen
 echo -e "\e[?1049h"
 

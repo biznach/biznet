@@ -7,17 +7,18 @@ fi
 
 case $1 in
   -archive)
-    echo rclone move pcloud:bizcloud/master pcloud:bizcloud/archive/master-$(date '+%F')|bash
-    echo rclone mkdir pcloud:bizcloud/master|bash
+    #echo rclone move pcloud:bizcloud/master pcloud:bizcloud/archive/master-$(date '+%F')|bash
+    #echo rclone mkdir pcloud:bizcloud/master|bash
+    echo rclone copy --use-mmap -P pcloud:bizcloud/master pcloud:bizcloud/archive/master-$(date '+%F')|bash
     exit 0
   ;;
 esac
 
 if [[ -d ./$1 ]]; then
-echo rclone sync -P $1 pcloud:bizcloud/master/$1|bash
+echo rclone sync --use-mmap -P $1 pcloud:bizcloud/master/$1|bash
 echo "Directory Copied"
 else
-echo rclone sync -P $1 pcloud:bizcloud/master/|bash
+echo rclone sync --use-mmap -P $1 pcloud:bizcloud/master/|bash
 echo "File Copied"
 fi
 
