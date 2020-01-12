@@ -1,5 +1,6 @@
 #!/bin/bash
 # ADD -vx after bash to echo expanded script
+# or set -x/+x later
 
 # VARIABLES ==========
 
@@ -11,36 +12,74 @@ input="ENTER"
 # FUNCTIONS ==========
 
 function pause {
-  echo -e "\n${CYAN}Press any key to Continue${NC}\n"
-  read -n 1 -s -r
-  menu
+  echo -e "${CYAN}Press [ENTER] to Continue${NC}"
+  echo -e "(or [ESC] to return)\n"
+  read -N 10000000 -t 0.01
+  read -n 1 -s -r input
+  case $input in
+    $'\e')
+      menu
+    ;;
+  esac
+}
+
+function completed {
+  echo -e "${CYAN}Press [ENTER] to Continue${NC}"
+  read -N 10000000 -t 0.01
+  read -n 1 -s -r input
+  case $input in
+    $'\e')
+      menu
+    ;;
+  esac
 }
 
 function one {
   clear
   echo -e "\n1) Initialization Wizard\n"
-  read -p "Enter Host Name: " bizhost
+  if [[ ( -s $HOME/.bizhost ) ]]; then
+    printf "Current Host Name: "
+    echo -e ${CYAN}$(cat $HOME/.bizhost)${NC}
+  fi
+  echo -e "\n(leave empty to skip)"
+  read -p "Enter New Host Name: " bizhost
   if [[ ! ( -z "$bizhost" ) ]]; then
     echo -e "$bizhost" > $HOME/.bizhost
+    if [[ ( -s $HOME/.bizhost ) ]]; then
+      printf "\nUpdated Host Name: "
+      echo -e "${CYAN}$(cat $HOME/.bizhost)${NC}\n"
+    fi
+  else
+    printf "\nRetained Host Name: "
+    echo -e "${CYAN}$(cat $HOME/.bizhost)${NC}\n"
   fi
-  echo -e "\nOperation Complete"
+
   pause
+  sudo apt-get update
+  sudo apt-get upgrade
+
+  echo -e "\nOperation Complete..."
+  completed
   menu
 }
 
 function two {
   clear
-  echo -e "\n2) Option 2\n"
-  echo -e "\nOperation Complete"
-  pause
+  echo -e "\n2) Installation Wizard\n"
+  sudo apt-get install -y figlet
+  echo -e "\nOperation Complete..."
+  completed
   menu
 }
 
 function three {
   clear
-  echo -e "\n3) Option 3\n"
-  echo -e "\nOperation Complete"
-  pause
+  echo -e "\n3) Backup Wizard\n"
+  bizbak $HOME/bizbin
+  bizbak $HOME/biznotes
+  bizbak $HOME/.bizbash
+  echo -e "\nOperation Complete..."
+  completed
   menu
 }
 
@@ -59,8 +98,8 @@ figlet "BizNet"
 echo -e " ** ${CYAN}BizNet Setup Script${NC} **\n"
 
 echo "1) Initialization Wizard"
-echo "2) Option 2..."
-echo "3) Option 3..."
+echo "2) Installation Wizard"
+echo "3) Backup Wizard"
 echo "X) Exit"
 
 echo -e "\nMake a Selection\n"

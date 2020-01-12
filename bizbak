@@ -7,17 +7,17 @@ fi
 
 case $1 in
   -archive)
-    echo rclone move pcloud:/bizcloud/$BIZHOST/$USER pcloud:/bizcloud/archive/$USER-$(date '+%F')|bash
-    echo rclone mkdir pcloud:/bizcloud/$BIZHOST/$USER|bash
+    echo rclone move pcloud:bizcloud/$BIZHOST/$USER pcloud:bizcloud/archive/$USER-$(date '+%F')|bash
+    echo rclone mkdir pcloud:bizcloud/$BIZHOST/$USER|bash
     exit 0
   ;;
 esac
 
 if [[ -d ./$1 ]]; then
-echo rclone sync -P $1 pcloud:/bizcloud/$BIZHOST/$USER/$1|bash
+echo rclone sync -P $1 pcloud:bizcloud/$BIZHOST/$USER/$1|bash
 echo "Directory Copied"
 else
-echo rclone sync -P $1 pcloud:/bizcloud/$BIZHOST/$USER/|bash
+echo rclone sync -P $1 pcloud:bizcloud/$BIZHOST/$USER/|bash
 echo "File Copied"
 fi
 

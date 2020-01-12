@@ -1,15 +1,15 @@
 #!/bin/bash
 
 if [[ $# != 1 ]]; then
- echo "Target file argument reqired"
- exit 1
+  echo "Target file argument reqired"
+  exit 1
 fi
 
 if [[ -d $HOME/bizcloud/$BIZHOST/$USER/$1 ]]; then
-echo rclone sync -P pcloud:/bizcloud/$BIZHOST/$USER/$1 ./$1|bash
+echo rclone sync -P pcloud:bizcloud/$BIZHOST/$USER/$1 ./$1|bash
 echo "Directory Copied"
 else
-echo rclone sync -P pcloud:/bizcloud/$BIZHOST/$USER/$1 .|bash
+echo rclone sync -P pcloud:bizcloud/$BIZHOST/$USER/$1 .|bash
 echo "File Copied"
 fi
 

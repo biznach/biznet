@@ -1,23 +1,23 @@
 #!/bin/bash
 
 if [[ $# != 1 ]]; then
- echo "Target file argument reqired"
- exit 1
+  echo "Target file argument reqired"
+  exit 1
 fi
 
 case $1 in
   -archive)
-    echo rclone move pcloud:/bizcloud/master pcloud:/bizcloud/archive/master-$(date '+%F')|bash
-    echo rclone mkdir pcloud:/bizcloud/master|bash
+    echo rclone move pcloud:bizcloud/master pcloud:bizcloud/archive/master-$(date '+%F')|bash
+    echo rclone mkdir pcloud:bizcloud/master|bash
     exit 0
   ;;
 esac
 
 if [[ -d ./$1 ]]; then
-echo rclone sync -P $1 pcloud:/bizcloud/master/$1|bash
+echo rclone sync -P $1 pcloud:bizcloud/master/$1|bash
 echo "Directory Copied"
 else
-echo rclone sync -P $1 pcloud:/bizcloud/master/|bash
+echo rclone sync -P $1 pcloud:bizcloud/master/|bash
 echo "File Copied"
 fi
 
