@@ -106,6 +106,21 @@ function wizback {
   menu
 }
 
+function wizsecurity {
+  clear
+  echo -e "\n4) Security Wizard\n"
+  if [[ -z "$SSH_AUTH_SOCK" ]]; then
+    eval "$(ssh-agent -s)"
+  fi
+  if [[ ! ( -z "$SSH_AUTH_SOCK" ) ]]; then
+    ssh-add $HOME/.ssh/bizgit_rsa
+    ssh-add $HOME/.ssh/id_rsa
+  fi
+  echo -e "\nOperation Complete..."
+  completed
+  menu
+}
+
 function finish {
 stty echo
 # restore screen
@@ -127,6 +142,7 @@ echo -e " ** ${CYAN}BizNet Setup Script${NC} **\n"
 echo "1) Initialization Wizard"
 echo "2) Installation Wizard"
 echo "3) Backup Wizard"
+echo "4) Security Wizard"
 echo "X) Exit"
 
 echo -e "\nMake a Selection\n"
@@ -145,6 +161,9 @@ case $input in
   ;;
   3)
     wizback
+  ;;  
+  4)
+    wizsecurity
   ;;
   $'\e[A')
     # THIS IS NOT WORKING TO CAPTURE ARROW KEYS without -n 2
