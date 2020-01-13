@@ -9,6 +9,6 @@ else
 fi
 
 echo git remote add google ssh://noahmhughes@gmail.com@source.developers.google.com:2022/p/flash-realm-256405/r/$gitdir|bash
-echo git remote add github ssh://git@github.com/bizfu/$gitdir|bash
+echo git remote add github ssh://git@github.com/biznach/$gitdir|bash
 
 exit 0
