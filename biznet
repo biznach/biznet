@@ -98,7 +98,7 @@ function wizinstall {
 function wizback {
   clear
   echo -e "\n3) Backup Wizard\n"
-  bizput $HOME/bizbin
+  bizput $HOME/biznet
   bizput $HOME/biznotes
   bizput $HOME/.gitconfig
   echo -e "\nOperation Complete..."
