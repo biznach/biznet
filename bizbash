@@ -81,5 +81,5 @@ if [[ ( -s /home/linuxbrew/.linuxbrew/bin/brew ) ]]; then
 fi
 
 if [[ ! -s $HOME/.bizconfig ]]; then
-  biznet
+  echo -e "Enter ${CYAN}biznet${NC} for Configuration\n"
 fi
