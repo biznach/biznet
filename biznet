@@ -5,8 +5,10 @@
 # VARIABLES ==========
 
 RED='\033[0;31m'
+GREEN='\033[0;32m'
 CYAN='\033[1;36m'
 NC='\033[0m'
+
 input="ENTER"
 
 # FUNCTIONS ==========
@@ -100,7 +102,11 @@ exit 0
 
 function menu {
 clear
-figlet "BizNet"
+if [[ ! -z $( command -v figlet ) ]]; then
+  figlet 'BizNet'
+else
+  echo -e '\nBizNet BizNet BizNet BizNet'
+fi
 echo -e " ** ${CYAN}BizNet Setup Script${NC} **\n"
 
 echo "1) Initialization Wizard"
@@ -152,11 +158,8 @@ esac
 
 # EXECUTE ==========
 
-# attempt to save biznet command getting lost
-$PROMPT_COMMAND
 # save screen
 echo -e "\e[?1049h"
-
 # draw menu
 menu
 
