@@ -4,15 +4,15 @@
 
 ##############################
 # ADD THIS include to .bashrc
-# if [[ -s $HOME/bizbin/bizbash ]]; then
-#   source $HOME/bizbin/bizbash 
+# if [[ -s $HOME/biznet/bizbash ]]; then
+#   source $HOME/biznet/bizbash 
 # fi
 ##############################
 
 # INITIALIZATION ==========
 
-if [[ ! ( -s $HOME/bizbin ) ]]; then
-  git clone https://github.com/bizfu/bizbin
+if [[ ! ( -s $HOME/biznet ) ]]; then
+  git clone https://github.com/biznach/biznet
 fi
 
 # VARIABLES ==========
@@ -60,10 +60,13 @@ echo -e  "      *** ${CYAN}Welcome to BizNet${NC} ***\n"
 
 # BIZPATH ==========
 
-export PATH=$HOME/bizbin:$PATH
+export PATH=$HOME/biznet:$PATH
 
 # INCLUDES ==========
 
 # homebrew
-eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+
+if [[ ( -s /home/linuxbrew/.linuxbrew/bin/brew ) ]]; then
+  eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+fi
 
