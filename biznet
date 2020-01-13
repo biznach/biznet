@@ -36,36 +36,51 @@ function completed {
   esac
 }
 
-function one {
+function initwiz {
   clear
   echo -e "\n1) Initialization Wizard\n"
-  if [[ ( -s $HOME/.bizconfig ) ]]; then
-    printf "Current Host Name: "
-    echo -e ${CYAN}$(cat $HOME/.bizconfig)${NC}
-  else
-      echo -e "biznet" > $HOME/.bizconfig
-  fi
-  echo -e "\n(leave empty to skip)"
-  read -p "Enter New Host Name: " bizconfig
-  if [[ ! ( -z "$bizconfig" ) ]]; then
-    echo -e "$bizconfig" > $HOME/.bizconfig
-    if [[ ( -s $HOME/.bizconfig ) ]]; then
-      printf "\nUpdated Host Name: "
-      echo -e "${CYAN}$(cat $HOME/.bizconfig)${NC}\n"
-    fi
-  else
-    printf "\nRetained Host Name: "
-    echo -e "${CYAN}$(cat $HOME/.bizconfig)${NC}\n"
-  fi
-  pause
-  sudo apt-get update
-  sudo apt-get upgrade
+  bizhost
   echo -e "\nOperation Complete..."
   completed
   menu
 }
 
-function two {
+function bizhost {
+  read -N 10000000 -t 0.01
+  # echo -e "Configure Host Name? [Y/n]"
+  read -n 1 -s -r -p "Configure Host Name? [Y/n]" input
+  echo -e ""
+  case $input in
+  $'\e')
+    menu
+  ;;
+  n|N)
+    return
+  ;;
+  *)
+    if [[ ( -s $HOME/.bizconfig ) ]]; then
+      printf "\nCurrent Host Name: "
+      echo -e ${CYAN}$(cat $HOME/.bizconfig)${NC}
+    else
+        echo -e "biznet" > $HOME/.bizconfig
+    fi
+    echo -e "\n(leave empty to skip)"
+    read -p "Enter New Host Name: " bizconfig
+    if [[ ! ( -z "$bizconfig" ) ]]; then
+      echo -e "$bizconfig" > $HOME/.bizconfig
+      if [[ ( -s $HOME/.bizconfig ) ]]; then
+        printf "\nUpdated Host Name: "
+        echo -e "${CYAN}$(cat $HOME/.bizconfig)${NC}\n"
+      fi
+    else
+      printf "\nRetained Host Name: "
+      echo -e "${CYAN}$(cat $HOME/.bizconfig)${NC}"
+    fi
+    ;;   
+  esac
+}
+
+function installwiz {
   clear
   echo -e "\n2) Installation Wizard\n"
   sudo apt-get update
@@ -80,7 +95,7 @@ function two {
   menu
 }
 
-function three {
+function backwiz {
   clear
   echo -e "\n3) Backup Wizard\n"
   bizput $HOME/bizbin
@@ -123,13 +138,13 @@ read -N 10000000 -t 0.01
 read -n 1 -s -r input
 case $input in
   1)
-    one
+    initwiz
   ;;
   2)
-    two
+    installwiz
   ;;
   3)
-    three
+    backwiz
   ;;
   $'\e[A')
     # THIS IS NOT WORKING TO CAPTURE ARROW KEYS without -n 2
