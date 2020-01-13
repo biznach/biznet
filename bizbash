@@ -2,22 +2,34 @@
 # BIZBASH
 ##############################
 
-##############################
-# ADD THIS include to .bashrc
-# if [[ -s $HOME/biznet/bizbash ]]; then
-#   source $HOME/biznet/bizbash 
-# fi
-##############################
-
 # INITIALIZATION ==========
 
 if [[ ! ( -s $HOME/biznet ) ]]; then
   git clone https://github.com/biznach/biznet
 fi
 
+if [[ -s $HOME/.bashrc ]]; then
+  if grep -Fq "BIZNET" $HOME/.bashrc; then
+    # code if found
+    echo "BizNet Initialized" >/dev/null
+  else
+    if [[ -s $HOME/biznet/bizinclude ]]; then
+      cat $HOME/biznet/bizinclude >> $HOME/.bashrc
+    fi
+  fi
+fi
+
 # BIZPATH ==========
 
 export PATH=$HOME/biznet:$PATH
+
+# ALIASES ==========
+
+# some more ls aliases
+alias lla='ls -la'
+alias ll='ls -a'
+alias ll='ls -l'
+alias read='less ./README.txt'
 
 # VARIABLES ==========
 
@@ -36,14 +48,6 @@ fi
 
 # save history after every command
 export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
-
-# ALIASES ==========
-
-# some more ls aliases
-alias lla='ls -la'
-alias ll='ls -a'
-alias ll='ls -l'
-alias read='less ./README.txt'
 
 # BIZPROMT ==========
 

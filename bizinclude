@@ -1,0 +1,7 @@
+##############################
+# BIZNET BIZBASH INCLUDE
+
+if [[ -s $HOME/biznet/bizbash ]]; then
+  source $HOME/biznet/bizbash 
+fi
+##############################
