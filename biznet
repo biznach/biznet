@@ -36,7 +36,7 @@ function completed {
   esac
 }
 
-function initwiz {
+function wizinit {
   clear
   echo -e "\n1) Initialization Wizard\n"
   bizhost
@@ -70,7 +70,7 @@ function bizhost {
       echo -e "$bizconfig" > $HOME/.bizconfig
       if [[ ( -s $HOME/.bizconfig ) ]]; then
         printf "\nUpdated Host Name: "
-        echo -e "${CYAN}$(cat $HOME/.bizconfig)${NC}\n"
+        echo -e "${CYAN}$(cat $HOME/.bizconfig)${NC}"
       fi
     else
       printf "\nRetained Host Name: "
@@ -80,7 +80,7 @@ function bizhost {
   esac
 }
 
-function installwiz {
+function wizinstall {
   clear
   echo -e "\n2) Installation Wizard\n"
   sudo apt-get update
@@ -95,7 +95,7 @@ function installwiz {
   menu
 }
 
-function backwiz {
+function wizback {
   clear
   echo -e "\n3) Backup Wizard\n"
   bizput $HOME/bizbin
@@ -111,7 +111,7 @@ stty echo
 # restore screen
 echo -e "\e[?1049l"
 read -N 10000000 -t 0.01
-exec bash
+#exec bash
 exit 0
 }
 
@@ -138,13 +138,13 @@ read -N 10000000 -t 0.01
 read -n 1 -s -r input
 case $input in
   1)
-    initwiz
+    wizinit
   ;;
   2)
-    installwiz
+    wizinstall
   ;;
   3)
-    backwiz
+    wizback
   ;;
   $'\e[A')
     # THIS IS NOT WORKING TO CAPTURE ARROW KEYS without -n 2
@@ -184,5 +184,5 @@ menu
 echo "ERROR - This should not have happened"
 echo -e "\e[?1049l"
 read -N 10000000 -t 0.01
-exec bash
+#exec bash
 exit 1
