@@ -15,10 +15,10 @@ case $1 in
 esac
 
 if [[ -d ./$1 ]]; then
-echo rclone sync --use-mmap -P $1 pcloud:bizcloud/master/$1|bash
+echo rclone sync --exclude .git/** --use-mmap -P $1 pcloud:bizcloud/master/$1|bash
 echo "Directory Copied"
 else
-echo rclone sync --use-mmap -P $1 pcloud:bizcloud/master/|bash
+echo rclone sync --exclude .git/** --use-mmap -P $1 pcloud:bizcloud/master/|bash
 echo "File Copied"
 fi
 

@@ -36,19 +36,58 @@ function completed {
   esac
 }
 
+function bizhost {
+  echo ""
+  read -N 10000000 -t 0.01
+  read -n 1 -s -r -p $'Configure Host Name? \e[32m[Y/n]\e[0m ' input
+  echo -e ""
+  case $input in
+    $'\e')
+      menu
+    ;;
+    n|N)
+      return
+    ;;
+    *)
+      echo ""
+      if [[ ( -s $HOME/.bizconfig ) ]]; then
+        printf "Current Host Name: "
+        echo -e ${CYAN}$(cat $HOME/.bizconfig)${NC}
+      else
+          echo -e "biznet" > $HOME/.bizconfig
+      fi
+      echo ""
+      echo -e "(leave empty to skip)"
+      read -p "Enter New Host Name: " bizconfig
+      if [[ ! ( -z "$bizconfig" ) ]]; then
+        echo -e "$bizconfig" > $HOME/.bizconfig
+        if [[ ( -s $HOME/.bizconfig ) ]]; then
+          printf "\nUpdated Host Name: "
+          echo -e "${CYAN}$(cat $HOME/.bizconfig)${NC}"
+        fi
+      else
+        printf "\nRetained Host Name: "
+        echo -e "${CYAN}$(cat $HOME/.bizconfig)${NC}"
+      fi
+    ;;
+  esac
+}
+
 function wizinit {
   clear
-  echo -e "\n1) Initialization Wizard\n"
+  echo ""
+  echo -e "1) Initialization Wizard"
   bizhost
-  echo -e "\nOperation Complete..."
+  echo ""
+  echo -e "Operation Complete..."
   completed
   menu
 }
 
-function bizhost {
+function installupdate {
+  echo ""
   read -N 10000000 -t 0.01
-  # echo -e "Configure Host Name? [Y/n]"
-  read -n 1 -s -r -p "Configure Host Name? [Y/n]" input
+  read -n 1 -s -r -p $'Install Updates? \e[32m[Y/n]\e[0m ' input
   echo -e ""
   case $input in
   $'\e')
@@ -58,65 +97,97 @@ function bizhost {
     return
   ;;
   *)
-    if [[ ( -s $HOME/.bizconfig ) ]]; then
-      printf "\nCurrent Host Name: "
-      echo -e ${CYAN}$(cat $HOME/.bizconfig)${NC}
-    else
-        echo -e "biznet" > $HOME/.bizconfig
-    fi
-    echo -e "\n(leave empty to skip)"
-    read -p "Enter New Host Name: " bizconfig
-    if [[ ! ( -z "$bizconfig" ) ]]; then
-      echo -e "$bizconfig" > $HOME/.bizconfig
-      if [[ ( -s $HOME/.bizconfig ) ]]; then
-        printf "\nUpdated Host Name: "
-        echo -e "${CYAN}$(cat $HOME/.bizconfig)${NC}"
-      fi
-    else
-      printf "\nRetained Host Name: "
-      echo -e "${CYAN}$(cat $HOME/.bizconfig)${NC}"
-    fi
-    ;;   
+    echo ""
+    sudo apt-get update
+    echo ""
+    sudo apt-get upgrade
+  ;;
+  esac
+}
+
+function installfiglet {
+  echo ""
+  read -N 10000000 -t 0.01
+  read -n 1 -s -r -p $'Install Figlet? \e[32m[Y/n]\e[0m ' input
+  echo -e ""
+  case $input in
+  $'\e')
+    menu
+  ;;
+  n|N)
+    return
+  ;;
+  *)
+    echo ""
+    sudo apt-get install -y figlet
+  ;;
+  esac
+}
+
+function installrclone {
+  echo "" 
+  read -N 10000000 -t 0.01
+  read -n 1 -s -r -p $'Install Rclone? \e[32m[Y/n]\e[0m ' input
+  echo -e ""
+  case $input in
+    $'\e')
+      menu
+    ;;
+    n|N)
+      return
+    ;;
+    *)
+      echo ""
+      curl https://rclone.org/install.sh | sudo bash
+    ;;
   esac
 }
 
 function wizinstall {
   clear
-  echo -e "\n2) Installation Wizard\n"
-  sudo apt-get update
-  sudo apt-get upgrade
-  pause
-  sudo apt-get install -y figlet
-  pause
-  # sudo apt-get install -y rclone
-  curl https://rclone.org/install.sh | sudo bash
-  echo -e "\nOperation Complete..."
+  echo ""
+  echo -e "2) Installation Wizard"
+  installupdate
+  installfiglet
+  installrclone
+  echo ""
+  echo -e "Operation Complete..."
   completed
   menu
 }
 
 function wizback {
   clear
-  echo -e "\n3) Backup Wizard\n"
+  echo ""
+  echo -e "3) Backup Wizard"
+  echo ""
   bizput $HOME/biznet
+  echo ""
   bizput $HOME/biznotes
+  echo ""
   bizput $HOME/.gitconfig
-  echo -e "\nOperation Complete..."
+  echo ""
+  echo -e "Operation Complete..."
   completed
   menu
 }
 
 function wizsecurity {
   clear
-  echo -e "\n4) Security Wizard\n"
+  echo ""
+  echo -e "4) Security Wizard"
   if [[ -z "$SSH_AUTH_SOCK" ]]; then
+    echo ""
     eval "$(ssh-agent -s)"
   fi
   if [[ ! ( -z "$SSH_AUTH_SOCK" ) ]]; then
+    echo ""
     ssh-add $HOME/.ssh/bizgit_rsa
+    echo ""
     ssh-add $HOME/.ssh/id_rsa
   fi
-  echo -e "\nOperation Complete..."
+  echo ""
+  echo -e "Operation Complete..."
   completed
   menu
 }
@@ -144,14 +215,14 @@ echo "2) Installation Wizard"
 echo "3) Backup Wizard"
 echo "4) Security Wizard"
 echo "X) Exit"
+echo ""
 
-echo -e "\nMake a Selection\n"
-input
+selection
 }
 
-function input {
+function selection {
 read -N 10000000 -t 0.01
-read -n 1 -s -r input
+read -n 1 -r -p "Make a Selection: " input
 case $input in
   1)
     wizinit
@@ -161,28 +232,18 @@ case $input in
   ;;
   3)
     wizback
-  ;;  
+  ;;
   4)
     wizsecurity
-  ;;
-  $'\e[A')
-    # THIS IS NOT WORKING TO CAPTURE ARROW KEYS without -n 2
-    stty -echo
-    echo -e "${RED} <<<Invalid>>>${NC}"
-    # Beep
-    echo -e "\a"
-    sleep 0.5
-    stty echo
-    menu
   ;;
   x|X|$'\e')
     finish
   ;;
   *)
     stty -echo
-    echo -e "${RED} <<<Invalid>>>${NC}"
+    echo -e "${RED} <Invalid${NC}"
     # Beep
-    echo -e "\a"
+    printf $'\a'
     sleep 0.2
     stty echo
     menu

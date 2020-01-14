@@ -14,7 +14,7 @@ if [[ -s $HOME/.bashrc ]]; then
     echo "BizNet Initialized" >/dev/null
   else
     if [[ -s $HOME/biznet/bizinclude ]]; then
-      cat $HOME/biznet/bizinclude >> $HOME/.bashrc
+      cat $HOME/biznet/bizbashinc >> $HOME/.bashrc
     fi
   fi
 fi
@@ -47,7 +47,8 @@ else
 fi
 
 # save history after every command
-export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+#export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+export PROMPT_COMMAND="history -a; history -c; history -r"
 
 # BIZPROMT ==========
 
