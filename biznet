@@ -10,6 +10,7 @@ CYAN='\033[1;36m'
 NC='\033[0m'
 
 input="ENTER"
+needsreboot='0'
 
 # FUNCTIONS ==========
 
@@ -55,6 +56,7 @@ function bizhost {
         echo -e ${CYAN}$(cat $HOME/.bizconfig)${NC}
       else
           echo -e "biznet" > $HOME/.bizconfig
+	        rebootneeded='1'
       fi
       echo ""
       echo -e "(leave empty to skip)"
@@ -64,6 +66,7 @@ function bizhost {
         if [[ ( -s $HOME/.bizconfig ) ]]; then
           printf "\nUpdated Host Name: "
           echo -e "${CYAN}$(cat $HOME/.bizconfig)${NC}"
+	        rebootneeded='1'
         fi
       else
         printf "\nRetained Host Name: "
@@ -197,7 +200,9 @@ stty echo
 # restore screen
 echo -e "\e[?1049l"
 read -N 10000000 -t 0.01
-#exec bash
+if [[ $rebootneeded == 1 ]]; then
+  exec bash
+fi
 exit 0
 }
 

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-figlet "BIZ"
 if [[ ! -z $( command -v figlet ) ]]; then
   figlet 'BIZ'
 else
