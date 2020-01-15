@@ -13,11 +13,11 @@ case $1 in
   ;;
 esac
 
-if [[ -d ./$1 ]]; then
-echo rclone sync --exclude .git/** --use-mmap -P $1 pcloud:bizcloud/$BIZHOST/$USER/$1|bash
+if [[ -d $(readlink -f $1) ]]; then
+echo rclone sync --exclude='.git/**' --use-mmap -P $1 pcloud:bizcloud/$BIZHOST/$USER/$(basename $1)|bash
 echo "Directory Copied"
 else
-echo rclone sync --exclude .git/** --use-mmap -P $1 pcloud:bizcloud/$BIZHOST/$USER/|bash
+echo rclone sync --exclude='.git/**' --use-mmap -P $1 pcloud:bizcloud/$BIZHOST/$USER/|bash
 echo "File Copied"
 fi
 
