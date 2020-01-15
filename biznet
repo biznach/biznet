@@ -37,8 +37,7 @@ function completed {
   esac
 }
 
-function bizhost {
-  echo ""
+function inithost {
   read -N 10000000 -t 0.01
   read -n 1 -s -r -p $'Configure Host Name? \e[32m[Y/n]\e[0m ' input
   echo -e ""
@@ -64,15 +63,43 @@ function bizhost {
       if [[ ! ( -z "$bizconfig" ) ]]; then
         echo -e "$bizconfig" > $HOME/.bizconfig
         if [[ ( -s $HOME/.bizconfig ) ]]; then
-          printf "\nUpdated Host Name: "
+          echo ""
+          printf "Updated Host Name: "
           echo -e "${CYAN}$(cat $HOME/.bizconfig)${NC}"
 	        rebootneeded='1'
         fi
       else
-        printf "\nRetained Host Name: "
+        echo ""
+        printf "Retained Host Name: "
         echo -e "${CYAN}$(cat $HOME/.bizconfig)${NC}"
       fi
     ;;
+  esac
+}
+
+function initbizcloud {
+  read -N 10000000 -t 0.01
+  read -n 1 -s -r -p $'Initialize Bizcloud? \e[32m[Y/n]\e[0m ' input
+  echo -e ""
+  case $input in
+  $'\e')
+    menu
+  ;;
+  n|N)
+    return
+  ;;
+  *)
+    echo ""
+    if [[ ! ( -s $HOME/bizcloud ) ]]; then
+      mkdir $HOME/bizcloud
+    fi    
+    if [[ ! ( -s /etc/systemd/system/bizcloud.service ) ]]; then
+      sudo ln -s /home/$USER/biznet/bizcloud.service bizcloud.service
+    fi
+    sudo systemctl start bizcloud.service
+    sudo systemctl enable bizcloud.service
+    echo "Service Established"
+  ;;
   esac
 }
 
@@ -80,7 +107,10 @@ function wizinit {
   clear
   echo ""
   echo -e "1) Initialization Wizard"
-  bizhost
+  echo ""
+  inithost
+  echo ""
+  initbizcloud
   echo ""
   echo -e "Operation Complete..."
   completed
@@ -88,7 +118,6 @@ function wizinit {
 }
 
 function installupdate {
-  echo ""
   read -N 10000000 -t 0.01
   read -n 1 -s -r -p $'Install Updates? \e[32m[Y/n]\e[0m ' input
   echo -e ""
@@ -109,7 +138,6 @@ function installupdate {
 }
 
 function installfiglet {
-  echo ""
   read -N 10000000 -t 0.01
   read -n 1 -s -r -p $'Install Figlet? \e[32m[Y/n]\e[0m ' input
   echo -e ""
@@ -128,7 +156,6 @@ function installfiglet {
 }
 
 function installrclone {
-  echo "" 
   read -N 10000000 -t 0.01
   read -n 1 -s -r -p $'Install Rclone? \e[32m[Y/n]\e[0m ' input
   echo -e ""
@@ -150,8 +177,11 @@ function wizinstall {
   clear
   echo ""
   echo -e "2) Installation Wizard"
+  echo ""
   installupdate
+  echo ""
   installfiglet
+  echo ""
   installrclone
   echo ""
   echo -e "Operation Complete..."

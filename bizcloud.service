@@ -9,7 +9,8 @@ ExecStart=/usr/bin/rclone mount \
 --config=/home/bitnami/.config/rclone/rclone.conf \
 --allow-other \
 --fast-list \
-pcloud:/bizcloud/ /home/bitnami/bizcloud
+--use-mmap \
+pcloud:bizcloud/ /home/bitnami/bizcloud
 Restart=always
 RestartSec=10
 ExecStop=/bin/fusermount -uz /home/bitnami/bizcloud
