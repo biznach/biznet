@@ -12,6 +12,25 @@ NC='\033[0m'
 input="ENTER"
 needsreboot='0'
 
+# TEMPLATES ==========
+
+function biztemplate {
+  read -N 10000000 -t 0.01
+  read -n 1 -s -r -p $'ACTION? \e[32m[Y/n]\e[0m ' input
+  echo -e ""
+  case $input in
+  $'\e')
+    menu
+  ;;
+  n|N)
+    return
+  ;;
+  *)
+    #ACTION
+  ;;
+  esac
+}
+
 # FUNCTIONS ==========
 
 function pause {
@@ -189,36 +208,120 @@ function wizinstall {
   menu
 }
 
+function archivebizdirs {
+  read -N 10000000 -t 0.01
+  read -n 1 -s -r -p $'Archive Online Bizdirs? \e[31m[y/N]\e[0m ' input
+  echo -e ""
+  case $input in
+  $'\e')
+    menu
+  ;;
+  y|Y)
+    bizput -archive
+    echo ""
+    bizput -archive
+  ;;
+  *)
+    return
+  ;;
+  esac
+}
+
+function backbizdirs {
+  read -N 10000000 -t 0.01
+  read -n 1 -s -r -p $'Backup Local Bizdirs? \e[32m[Y/n]\e[0m ' input
+  echo -e ""
+  case $input in
+  $'\e')
+    menu
+  ;;
+  n|N)
+    return
+  ;;
+  *)
+    bizput $HOME/biznet
+    echo ""
+    bizput $HOME/biznotes
+  ;;
+  esac
+}
+
 function wizback {
   clear
   echo ""
   echo -e "3) Backup Wizard"
   echo ""
-  bizput $HOME/biznet
+  archivebizdirs
   echo ""
-  bizput $HOME/biznotes
-  echo ""
-  bizput $HOME/.gitconfig
+  backbizdirs
   echo ""
   echo -e "Operation Complete..."
   completed
   menu
 }
 
+function securitykeys {
+  read -N 10000000 -t 0.01
+  read -n 1 -s -r -p $'Setup SSH Keys? \e[32m[Y/n]\e[0m ' input
+  echo -e ""
+  case $input in
+  $'\e')
+    menu
+  ;;
+  n|N)
+    return
+  ;;
+  *)
+    if [[ -z "$SSH_AUTH_SOCK" ]]; then
+      echo ""
+      eval "$(ssh-agent -s)"
+    fi
+    if [[ ! ( -z "$SSH_AUTH_SOCK" ) ]]; then
+      echo ""
+      ssh-add $HOME/.ssh/bizgit_rsa
+      echo ""
+      ssh-add $HOME/.ssh/id_rsa
+    fi
+  ;;
+  esac
+}
+
 function wizsecurity {
   clear
   echo ""
   echo -e "4) Security Wizard"
-  if [[ -z "$SSH_AUTH_SOCK" ]]; then
+  echo ""
+  securitykeys
+  echo ""
+  echo -e "Operation Complete..."
+  completed
+  menu
+}
+
+function commandlist {
+  read -N 10000000 -t 0.01
+  read -n 1 -s -r -p $'List Biznet Commands? \e[32m[Y/n]\e[0m ' input
+  echo -e ""
+  case $input in
+  $'\e')
+    menu
+  ;;
+  n|N)
+    return
+  ;;
+  *)
     echo ""
-    eval "$(ssh-agent -s)"
-  fi
-  if [[ ! ( -z "$SSH_AUTH_SOCK" ) ]]; then
-    echo ""
-    ssh-add $HOME/.ssh/bizgit_rsa
-    echo ""
-    ssh-add $HOME/.ssh/id_rsa
-  fi
+    ls -1 -F $HOME/biznet | grep '*$'
+  ;;
+  esac
+}
+
+function biznethelp {
+  clear
+  echo ""
+  echo -e "5) Biznet Help"
+  echo ""
+  commandlist
   echo ""
   echo -e "Operation Complete..."
   completed
@@ -249,6 +352,7 @@ echo "1) Initialization Wizard"
 echo "2) Installation Wizard"
 echo "3) Backup Wizard"
 echo "4) Security Wizard"
+echo "5) Biznet Help"
 echo "X) Exit"
 echo ""
 
@@ -270,6 +374,9 @@ case $input in
   ;;
   4)
     wizsecurity
+  ;;
+  5)
+    biznethelp
   ;;
   x|X|$'\e')
     finish
