@@ -219,7 +219,7 @@ function archivebizdirs {
   y|Y)
     bizput -archive
     echo ""
-    bizput -archive
+    bizbak -archive
   ;;
   *)
     return
@@ -352,7 +352,7 @@ echo "1) Initialization Wizard"
 echo "2) Installation Wizard"
 echo "3) Backup Wizard"
 echo "4) Security Wizard"
-echo "5) Biznet Help"
+echo "5) BizNet Help"
 echo "X) Exit"
 echo ""
 
