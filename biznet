@@ -98,16 +98,13 @@ function inithost {
 
 function initbizcloud {
   read -N 10000000 -t 0.01
-  read -n 1 -s -r -p $'Initialize Bizcloud? \e[32m[Y/n]\e[0m ' input
+  read -n 1 -s -r -p $'Initialize Bizcloud? \e[31m[y/N]\e[0m ' input
   echo -e ""
   case $input in
   $'\e')
     menu
   ;;
-  n|N)
-    return
-  ;;
-  *)
+  y|Y)
     echo ""
     if [[ ! ( -s $HOME/bizcloud ) ]]; then
       mkdir $HOME/bizcloud
@@ -118,6 +115,9 @@ function initbizcloud {
     sudo systemctl start bizcloud.service
     sudo systemctl enable bizcloud.service
     echo "Service Established"
+  ;;
+  *)
+    return
   ;;
   esac
 }
@@ -260,6 +260,77 @@ function wizback {
   menu
 }
 
+function securityreset {
+  agentcount=`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`
+  echo "There are $agentcount SSH Agents already Running"
+  echo ""
+  read -N 10000000 -t 0.01
+  read -n 1 -s -r -p $'Kill Existing SSH Agents? \e[31m[y/N]\e[0m ' input
+  echo -e ""
+  case $input in
+  $'\e')
+    menu
+  ;;
+  y|Y)
+    agentcount=`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`
+    echo ""
+    echo "Killing All Running SSH Agents"
+    echo ""
+    echo "Agents Running Before: $agentcount"
+    #ps aux | grep 'ssh-agent -s' | grep -v grep | awk '{print $2'} | xargs kill -9
+    ps aux | grep 'ssh-agent -s' | awk '{print $2'} | xargs kill -9
+    echo "Agents Running After: $agentcount"
+  ;;
+  *)
+    return
+  ;;
+  esac
+}
+
+function securityagent {
+  read -N 10000000 -t 0.01
+  read -n 1 -s -r -p $'Start SSH Agent? \e[31m[y/N]\e[0m ' input
+  echo ""
+  case $input in
+  $'\e')
+    menu
+  ;;
+  y|Y)
+    #agentcount=`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`
+    #echo "There are $agentcount SSH Agents already Running"
+    ps -u $(whoami) | grep ssh-agent &> /dev/null
+    if [ $? -ne 0 ]; then
+      echo ""
+      echo "Starting New SSH Agent"
+      echo ""
+      eval $(ssh-agent)
+      echo "export SSH_AGENT_PID=$SSH_AGENT_PID" > $HOME/.ssh/ssh-agent
+      echo "export SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $HOME/.ssh/ssh-agent
+      echo ""
+      echo "New SSH Authorization Socket:"
+      echo $SSH_AUTH_SOCK        
+    else
+      if [[ -s $HOME/.ssh/ssh-agent ]]; then
+        source $HOME/.ssh/ssh-agent
+        echo ""
+        echo "Sourcing SSH Agent from File"
+        echo ""
+        echo "Loaded SSH Authorization Socket:"
+        echo "$SSH_AUTH_SOCK"      
+      else
+        echo ""
+        echo "Sourcing SSH Agent from File Failed!"
+      fi
+    fi
+    # Kill SSH Agent on Shell Exit
+    #trap 'ssh-agent -k; exit' 0
+  ;;
+  *)
+    return
+  ;;
+  esac
+}
+
 function securitykeys {
   read -N 10000000 -t 0.01
   read -n 1 -s -r -p $'Setup SSH Keys? \e[32m[Y/n]\e[0m ' input
@@ -272,15 +343,19 @@ function securitykeys {
     return
   ;;
   *)
-    if [[ -z "$SSH_AUTH_SOCK" ]]; then
+    agentcount=`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`
+    if [[ ( -n $SSH_AUTH_SOCK ) ]]; then
       echo ""
-      eval "$(ssh-agent -s)"
-    fi
-    if [[ ! ( -z "$SSH_AUTH_SOCK" ) ]]; then
+      echo -e "There are $agentcount SSH Agents Running"
+      echo ""
+      echo "Current SSH Auth Sock:"
+      echo $SSH_AUTH_SOCK      
       echo ""
       ssh-add $HOME/.ssh/bizgit_rsa
+      ssh-add $HOME/.ssh/bizgoogle_rsa
+    else
       echo ""
-      ssh-add $HOME/.ssh/id_rsa
+      echo "No SSH Agent Running for this Shell"
     fi
   ;;
   esac
@@ -290,6 +365,10 @@ function wizsecurity {
   clear
   echo ""
   echo -e "4) Security Wizard"
+  echo ""
+  securityreset
+  echo ""
+  securityagent  
   echo ""
   securitykeys
   echo ""

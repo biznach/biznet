@@ -1,8 +1,42 @@
-if [[ -z "$SSH_AUTH_SOCK" ]]; then
-  eval "$(ssh-agent -s)"
+#!/bin/bash
+
+agentcount=`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`
+echo "There are $agentcount SSH Agents already Running"
+
+ps -u $(whoami) | grep ssh-agent &> /dev/null
+if [ $? -ne 0 ];then
+  echo ""
+  echo "Starting New SSH Agent"
+  echo ""
+  eval $(ssh-agent)
+  echo "export SSH_AGENT_PID=$SSH_AGENT_PID" > $HOME/.ssh/ssh-agent
+  echo "export SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $HOME/.ssh/ssh-agent
+  echo ""
+  echo "New SSH Authorization Socket:"
+  echo $SSH_AUTH_SOCK        
+else
+  if [[ -s $HOME/.ssh/ssh-agent ]]; then
+    echo ""
+    echo "Sourcing SSH Agent from File"
+    source $HOME/.ssh/ssh-agent
+    echo ""
+    echo "Loaded SSH Authorization Socket:"
+    echo "$SSH_AUTH_SOCK"      
+  else
+    echo ""
+    echo "Sourcing SSH Agent from File Failed"
+  fi
 fi
-if [[ ! ( -z "$SSH_AUTH_SOCK" ) ]]; then
+
+# Kill SSH Agent on Shell Exit
+#trap 'ssh-agent -k; exit' 0
+
+if [[ ( -n $SSH_AUTH_SOCK ) ]]; then
+  echo ""
+  echo "Adding Biz Keys:"
   ssh-add $HOME/.ssh/bizgit_rsa
-  ssh-add $HOME/.ssh/id_rsa
-  #ssh-add -l
+  ssh-add $HOME/.ssh/bizgoogle_rsa
+else
+  echo ""
+  echo "No SSH Authorization Socket Found!"
 fi

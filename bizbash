@@ -1,3 +1,4 @@
+#!/bin/bash
 ##############################
 # BIZBASH
 ##############################
@@ -6,7 +7,16 @@
 
 if [[ ! ( -s $HOME/biznet ) ]]; then
   git clone https://github.com/biznach/biznet
+  if [[ -s $HOME/biznet ]]; then
+    cd $HOME/biznet
+      bizgit biznet
+    cd $HOME
+  fi
 fi
+
+#if [[ -s $HOME/biznet/bizkey ]]; then
+  #source bizkey
+#fi
 
 if [[ -s $HOME/.bashrc ]]; then
   if grep -Fq "BIZNET" $HOME/.bashrc; then
@@ -26,6 +36,7 @@ export PATH=$HOME/biznet:$PATH
 # ALIASES ==========
 
 # some more ls aliases
+alias l1='ls -1'
 alias lla='ls -la'
 alias ll='ls -a'
 alias ll='ls -l'
