@@ -261,7 +261,7 @@ function wizback {
 }
 
 function securityreset {
-  agentcount=`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`
+  agentcount=`ps -ax | grep 'ssh-agent' | grep -v grep | wc -l | tr -d '[:space:]'`
   echo "There are $agentcount SSH Agents already Running"
   echo ""
   read -N 10000000 -t 0.01
@@ -272,13 +272,13 @@ function securityreset {
     menu
   ;;
   y|Y)
-    agentcount=`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`
+    agentcount=`ps -ax | grep 'ssh-agent' | grep -v grep | wc -l | tr -d '[:space:]'`
     echo ""
     echo "Killing All Running SSH Agents"
     echo ""
     echo "Agents Running Before: $agentcount"
-    #ps aux | grep 'ssh-agent -s' | grep -v grep | awk '{print $2'} | xargs kill -9
-    ps aux | grep 'ssh-agent -s' | awk '{print $2'} | xargs kill -9
+    #ps aux | grep 'ssh-agent' | grep -v grep | awk '{print $2'} | xargs kill -9
+    ps aux | grep 'ssh-agent' | awk '{print $2'} | xargs kill -9
     echo "Agents Running After: $agentcount"
   ;;
   *)
@@ -296,7 +296,7 @@ function securityagent {
     menu
   ;;
   y|Y)
-    #agentcount=`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`
+    #agentcount=`ps -ax | grep 'ssh-agent' | grep -v grep | wc -l | tr -d '[:space:]'`
     #echo "There are $agentcount SSH Agents already Running"
     ps -u $(whoami) | grep ssh-agent &> /dev/null
     if [ $? -ne 0 ]; then
@@ -343,7 +343,7 @@ function securitykeys {
     return
   ;;
   *)
-    agentcount=`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`
+    agentcount=`ps -ax | grep 'ssh-agent' | grep -v grep | wc -l | tr -d '[:space:]'`
     if [[ ( -n $SSH_AUTH_SOCK ) ]]; then
       echo ""
       echo -e "There are $agentcount SSH Agents Running"

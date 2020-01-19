@@ -1,6 +1,6 @@
 #!/bin/bash
 
-agentcount=`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`
+agentcount=`ps -ax | grep 'ssh-agent' | grep -v grep | wc -l | tr -d '[:space:]'`
 echo "There are $agentcount SSH Agents already Running"
 
 ps -u $(whoami) | grep ssh-agent &> /dev/null
