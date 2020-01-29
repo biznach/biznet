@@ -110,7 +110,7 @@ function initbizcloud {
       mkdir $HOME/bizcloud
     fi    
     if [[ ! ( -s /etc/systemd/system/bizcloud.service ) ]]; then
-      sudo ln -s /home/$USER/biznet/bizcloud.service bizcloud.service
+      sudo ln -s /home/$USER/biznet/bizcloud.service /etc/systemd/system/bizcloud.service
     fi
     sudo systemctl start bizcloud.service
     sudo systemctl enable bizcloud.service

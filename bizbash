@@ -5,12 +5,13 @@
 
 # INITIALIZATION ==========
 
+currentdir=$PWD
 if [[ ! ( -s $HOME/biznet ) ]]; then
   git clone https://github.com/biznach/biznet
   if [[ -s $HOME/biznet ]]; then
     cd $HOME/biznet
       bizgit biznet
-    cd $HOME
+    cd $currentdir
   fi
 fi
 
@@ -20,13 +21,17 @@ fi
 
 if [[ -s $HOME/.bashrc ]]; then
   if grep -Fq "BIZNET" $HOME/.bashrc; then
-    # code if found
     echo "BizNet Initialized" >/dev/null
   else
-    if [[ -s $HOME/biznet/bizinclude ]]; then
+    if [[ -s $HOME/biznet/bizbashinc ]]; then
+      echo "BizNet Initializing" >/dev/null
       cat $HOME/biznet/bizbashinc >> $HOME/.bashrc
+    else
+      echo "Biz Include Not Found!" >/dev/null
     fi
   fi
+else
+  echo"Initialization Failed!" >/dev/null
 fi
 
 # BIZPATH ==========
