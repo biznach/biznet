@@ -3,13 +3,14 @@
 agentcount=`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`
 echo "There are $agentcount SSH Agents already Running"
 
-#ps -u $(whoami) | grep 'ssh-agent -s' &> /dev/null
-ps | grep 'ssh-agent' &> /dev/null
+ps -u $(whoami) | grep 'ssh-agent' &> /dev/null
+#ps x | grep 'ssh-agent' &> /dev/null
 if [ $? -ne 0 ];then
   echo ""
+  echo -e "$(whoami)"
   echo "Starting New SSH Agent"
   echo ""
-  eval `ssh-agent -s`
+  eval $(ssh-agent -s)
   echo "export SSH_AGENT_PID=$SSH_AGENT_PID" > $HOME/.ssh/ssh-agent
   echo "export SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $HOME/.ssh/ssh-agent
   echo ""

@@ -15,23 +15,23 @@ if [[ ! ( -s $HOME/biznet ) ]]; then
   fi
 fi
 
-#if [[ -s $HOME/biznet/bizkey ]]; then
-  #source bizkey
-#fi
+if [[ -s $HOME/biznet/bizkey ]]; then
+  source bizkey &> /dev/null
+fi
 
 if [[ -s $HOME/.bashrc ]]; then
   if grep -Fq "BIZNET" $HOME/.bashrc; then
-    echo "BizNet Initialized" >/dev/null
+    echo "BizNet Initialized" > /dev/null
   else
     if [[ -s $HOME/biznet/bizbashinc ]]; then
-      echo "BizNet Initializing" >/dev/null
+      echo "BizNet Initializing" > /dev/null
       cat $HOME/biznet/bizbashinc >> $HOME/.bashrc
     else
-      echo "Biz Include Not Found!" >/dev/null
+      echo "Biz Include Not Found!" > /dev/null
     fi
   fi
 else
-  echo"Initialization Failed!" >/dev/null
+  echo"Initialization Failed!" > /dev/null
 fi
 
 # BIZPATH ==========
