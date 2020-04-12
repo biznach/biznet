@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [[ ! -z $( command -v ncdu ) ]]; then
+  sudo ncdu -x /
+else
+  echo -e '\nNCDU NOT INSTALLED'
+fi
