@@ -105,6 +105,9 @@ echo -e  "      *** ${CYAN}Welcome to BizNet${NC} ***\n"
    #eval `cat $HOME/.ssh/ssh-agent`
 #fi
 
+# Using souced script to setup SSH
+source bizkey
+
 # INCLUDES ==========
 
 # homebrew
