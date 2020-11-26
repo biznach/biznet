@@ -7,8 +7,9 @@ fi
 
 case $1 in
   -archive)
-    echo rclone move pcloud:bizcloud/$BIZHOST/$USER pcloud:bizcloud/archive/$USER-$(date '+%F')|bash
-    echo rclone mkdir pcloud:bizcloud/$BIZHOST/$USER|bash
+    #echo rclone move pcloud:bizcloud/$BIZHOST/$USER pcloud:bizcloud/archive/$USER-$(date '+%F')|bash
+    #echo rclone mkdir pcloud:bizcloud/$BIZHOST/$USER|bash
+    echo rclone copy --use-mmap -P pcloud:bizcloud/$BIZHOST/$USER pcloud:bizcloud/archive/$USER-$(date '+%F')|bash
     exit 0
   ;;
 esac
