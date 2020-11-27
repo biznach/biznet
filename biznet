@@ -240,8 +240,8 @@ function backbizdirs {
   ;;
   *)
     bizput $HOME/biznet
-    #echo ""
-    #bizput $HOME/biznotes
+    echo ""
+    bizput $HOME/biznotes
   ;;
   esac
 }
