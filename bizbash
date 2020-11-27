@@ -3,6 +3,9 @@
 # BIZBASH
 ##############################
 
+# SETUP ==========
+# source <(curl -L biznet.biznach.com)
+
 # INITIALIZATION ==========
 
 currentdir=$PWD
