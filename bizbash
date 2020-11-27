@@ -5,6 +5,7 @@
 
 # SETUP ==========
 # source <(curl -L biznet.biznach.com)
+# biznet
 
 # INITIALIZATION ==========
 
@@ -16,10 +17,6 @@ if [[ ! ( -s $HOME/biznet ) ]]; then
       bizgit biznet
     cd $currentdir
   fi
-fi
-
-if [[ -s $HOME/biznet/bizkey ]]; then
-  source bizkey &> /dev/null
 fi
 
 if [[ -s $HOME/.bashrc ]]; then
@@ -85,7 +82,9 @@ unset color_prompt
 # SSH LAUNCHER ==========
 
 # Using souced script to setup SSH
-source bizkey
+if [[ -s $HOME/biznet/bizkey ]]; then
+  source bizkey &> /dev/null
+fi
 
 # WELCOME ==========
 
