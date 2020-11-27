@@ -3,5 +3,5 @@
 if [[ ! -z $( command -v figlet ) ]]; then
   figlet 'BIZ'
 else
-  echo -e '\nBIZ'
+  echo -e '\nBIZNACH'
 fi
