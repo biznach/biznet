@@ -86,6 +86,10 @@ if [[ -s $HOME/biznet/bizkey ]]; then
   source bizkey &> /dev/null
 fi
 
+# BIZBOT DIALOGFLOW ==========
+
+# export GOOGLE_APPLICATION_CREDENTIALS="/home/bitnami/.ssh/bizbot.json"
+
 # WELCOME ==========
 
 if [[ ! -z $( command -v figlet ) ]]; then
