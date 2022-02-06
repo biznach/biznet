@@ -37,6 +37,7 @@ if [[ ( -n $SSH_AUTH_SOCK ) ]]; then
   echo ""
   echo "Adding Biz Keys:"
   ssh-add $HOME/.ssh/bizgit_rsa
+  ssh-add $HOME/.ssh/id_rsa
   ssh-add $HOME/.ssh/bizgoogle_rsa
 else
   echo ""
