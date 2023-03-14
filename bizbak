@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ $# != 1 ]]; then
-  echo "Backs up file or folder per account. Target file argument reqired. -archive to initiate coude backup"
+  echo "Backs up file or folder per account. Target file argument reqired. -archive to initiate cloud backup"
   exit 1
 fi
 
