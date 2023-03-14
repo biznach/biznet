@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ $# != 1 ]]; then
-  echo "Restores file or folder per account to home directory. Target file argument reqired. -archive to initiate cloud backup"
+  echo "Restores file or folder per account to home directory. Target file argument reqired."
   exit 1
 fi
 
